@@ -10,6 +10,8 @@ var createMessage = require('./protocol').createMessage;
 
 
 debug = process.env.NODE_CELERY_DEBUG === '1' ? util.debug : function() {};
+default_queue_params = {autoDelete: true,
+                        durable: true};
 
 function Configuration(options) {
 	var self = this;
@@ -190,6 +192,8 @@ function Result(taskid, client) {
 		debug('Subscribing to result queue...');
 		self.client.backend.queue(
 		self.taskid.replace(/-/g, ''), {
+            "autoDelete": default_queue_params.autoDelete,
+            "durable": default_queue_params.durable,
 			"arguments": {
 				'x-expires': self.client.conf.TASK_RESULT_EXPIRES
 			}
